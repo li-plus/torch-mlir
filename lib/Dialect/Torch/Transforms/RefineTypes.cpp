@@ -1006,6 +1006,9 @@ void TypeAnalysis::visitOperation(Operation *op,
   } else if (auto ones = dyn_cast<AtenOnesOp>(op)) {
     visitConstantTensorAllocOp<AtenOnesOp>(ones, /*dataType=*/{});
     return;
+  } else if (auto eye = dyn_cast<AtenEyeOp>(op)) {
+    visitConstantTensorAllocOp<AtenEyeOp>(eye, /*dataType=*/{});
+    return;
   } else if (auto emptyMemoryFormat = dyn_cast<AtenEmptyMemoryFormatOp>(op)) {
     visitConstantTensorAllocOp<AtenEmptyMemoryFormatOp>(emptyMemoryFormat,
                                                         /*dataType=*/{});

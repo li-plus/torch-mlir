@@ -1333,6 +1333,32 @@ LogicalResult ConvertAtenOp<AtenGeluBackwardOp>::matchAndRewrite(
   return success();
 }
 
+// AtenEyeOp
+template <>
+LogicalResult ConvertAtenOp<AtenEyeOp>::matchAndRewrite(
+    AtenEyeOp op, OpAdaptor adaptor,
+    ConversionPatternRewriter &rewriter) const {
+  auto outType =
+      getTypeConverter()->convertType(op.getType()).cast<RankedTensorType>();
+
+  int64_t n;
+  if (!matchPattern(op.getN(), m_TorchConstantInt(&n))) {
+    return op.emitError("unimplemented: n must be a constant int");
+  }
+
+  SmallVector<int32_t> values(n * n, 0);
+  for (int64_t i = 0; i < n; i++) {
+    values[i * n + i] = 1;
+  }
+
+  SmallVector<int64_t> shape{n, n};
+  Value constOp =
+      mhlo::getConstTensor<int32_t>(rewriter, op, values, shape).value();
+
+  rewriter.replaceOpWithNewOp<mhlo::ConvertOp>(op, outType, constOp);
+  return success();
+}
+
 // RuntimeAssertOp
 namespace {
 class ConvertRuntimeAssertOp : public OpConversionPattern<RuntimeAssertOp> {
@@ -1464,6 +1490,7 @@ void mlir::torch::torch_to_mhlo::populateBasicOpPatternsAndLegality(
   INSERT_ATENOP_PATTERN(AtenSizeIntOp);
   INSERT_ATENOP_PATTERN(AtenToDtypeOp);
   INSERT_ATENOP_PATTERN(AtenWhereSelfOp);
+  INSERT_ATENOP_PATTERN(AtenEyeOp);
 #undef INSERT_ATENOP_PATTERN
 
 #define INSERT_BINARY_BROADCAST_PATTERN(AtenOp, MhloOp)                        \

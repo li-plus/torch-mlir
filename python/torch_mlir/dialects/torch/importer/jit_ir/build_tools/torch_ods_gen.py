@@ -437,6 +437,7 @@ def emit_ops(emitter_td: TextEmitter, registry: Registry):
     emit("aten::new_ones : (Tensor, int[], int?, int?, Device?, bool?) -> (Tensor)")
     emit("aten::zeros : (int[], int?, int?, Device?, bool?) -> (Tensor)")
     emit("aten::new_zeros : (Tensor, int[], int?, int?, Device?, bool?) -> (Tensor)")
+    emit("aten::eye : (int, int?, int?, Device?, bool?) -> (Tensor)")
     emit("aten::tensor : (t[], int?, Device?, bool) -> (Tensor)")
     emit("aten::tensor.bool : (bool, int?, Device?, bool) -> (Tensor)")
     emit("aten::tensor.int : (int, int?, Device?, bool) -> (Tensor)")

@@ -1319,6 +1319,43 @@ def NewEmptyModuleLayoutIntDtype_basic(module, tu: TestUtils):
 # ==============================================================================
 
 
+class AtenEyeOpModule(torch.nn.Module):
+    def __init__(self):
+        super().__init__()
+
+    @export
+    @annotate_args([
+        None,
+    ])
+    def forward(self):
+        return torch.eye(5)
+
+
+@register_test_case(module_factory=lambda: AtenEyeOpModule())
+def AtenEyeOpModule_basic(module, tu: TestUtils):
+    module.forward()
+
+
+class AtenEyeOpInt64Module(torch.nn.Module):
+    def __init__(self):
+        super().__init__()
+
+    @export
+    @annotate_args([
+        None,
+    ])
+    def forward(self):
+        return torch.eye(5, dtype=torch.int64)
+
+
+@register_test_case(module_factory=lambda: AtenEyeOpInt64Module())
+def AtenEyeOpInt64Module_basic(module, tu: TestUtils):
+    module.forward()
+
+
+# ==============================================================================
+
+
 class MaskedFillScalarDefaultModule(torch.nn.Module):
 
     def __init__(self):
